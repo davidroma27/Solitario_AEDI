@@ -168,4 +168,14 @@ public class Mesa {
             }
         }
     }//Fin mostrarMesa()
+    
+    //Comprueba si los montones exteriores han sido completados
+    public boolean verificarMontonExterior(){
+        boolean lleno = false;
+        //comprueba cada stack del monton
+        for (Stack<Carta> stack : montonExterior) {
+            if(stack.size() == 10) lleno = true;
+        }
+        return lleno;
+    }
 }

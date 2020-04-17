@@ -4,7 +4,6 @@
 * Funcionalidad: estando la baraja desordenada, devolverá la carta situada encima del montón de cartas
  */
 package solitario.Core;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -13,88 +12,63 @@ import pila.*;
 
 public class Baraja {
     
-    private int numcartas =40;
-    Carta[] barajaCartasOrdenadas= new Carta[numcartas];
+    
+    Carta[] barajaOrdenadas= new Carta[40];
     Pila<Carta> barajaCartasAleatorias= new EnlazadaPila<>();
     
     
     //CONSTRUCTOR DE LA BARAJA
     public Baraja(){
-    crearTodasCartas(barajaCartasOrdenadas);
-    rellenarBarajaAleatoriamente(barajaCartasAleatorias, barajaCartasOrdenadas );
+        
+    crearTodasCartas();
+    rellenarBarajaAleatoriamente(barajaCartasAleatorias, barajaOrdenadas );
 }
    
     //METODO PARA CREAR LAS CARTAS ORDENADAS EN ARRAY
-    private void crearTodasCartas(Carta[] baraja){
+    private void crearTodasCartas(){
         int contador =0;
         
-        //crear copas
-        for(int c=1; c<13; c++){
-        if(c==8||c==9){
-        //Nada
-        }else{
-            baraja[contador]=new Carta(c, Palos.COPAS);
-        contador++;
-        }
-        }
         
-        //crear bastos
-        for(int b=1; b<13; b++){
-        if(b==8||b==9){
-        //Nada
-        }else{
-            baraja[contador]=new Carta(b, Palos.BASTOS);
-        contador++;
+        for(int p=0; p<Palos.values().length; p++){
+            
+            for(int j=1; j<8; j++){
+                
+            barajaOrdenadas[contador]= new Carta(j,Palos.values()[p]);
+            contador++;
+            
+            }
+             
+            for (int j=10; j<13; j++){
+                
+            barajaOrdenadas[contador]= new Carta(j,Palos.values()[p]);
+            contador++;
+            
+            }
+            
         }
-        }
-        
-        //crear espadas
-        
-        for(int e=1; e<13; e++){
-        if(e==8||e==9){
-        //Nada
-        }else{
-            baraja[contador]=new Carta(e, Palos.ESPADAS);
-        contador++;
-        }
-        }
-        
-        //crear oros
-        for(int o=1; o<13; o++){
-        if(o==8||o==9){
-        //Nada
-        }else{
-            baraja[contador]=new Carta(o, Palos.OROS);
-        contador++;
-        }
-        }
-        
         //Comprobar
         if(contador==40){
             System.out.println("La baraja se ha creado correctamente");
         }else{
             System.out.println("La baraja no se ha creado correctamente");}
         
-    //MEZCLAMOS LAS CARTAS
+        //MEZCLAMOS LAS CARTAS
     
     //1- convertimos el array en una lista de cartas
-    List<Carta> lista = Arrays.asList(baraja);
+    List<Carta> lista = Arrays.asList(barajaOrdenadas);
     
     //2- aplicamos el metodo shuffle
     Collections.shuffle(lista);
         
     //3- ahora volvemos a convertir la lista en un array
-        lista.toArray(baraja);
+        lista.toArray(barajaOrdenadas);
         
-    
     }
-    
-    
-    
+
     //METODO PARA RELLENAR LA BARAJA DE FORMA ALEATORIA
     private void rellenarBarajaAleatoriamente(Pila<Carta> barajaCartasAleatorias, Carta[] barajaCartasOrdenadas){
         
-        for(int i=0; i<numcartas; i++){
+        for(int i=0; i<40; i++){
         barajaCartasAleatorias.push(barajaCartasOrdenadas[i]);
         }
    
