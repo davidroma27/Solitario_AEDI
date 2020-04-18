@@ -5,41 +5,49 @@
  */
 package solitario.Core;
 
-import java.util.Scanner;
+import solitario.IU.ES;
 
 public class Jugador {
 
-    Scanner entrada = new Scanner(System.in);
-
     private String nombre;
-    private Carta carta;
-    private final Mesa mesa;
 
-    public Jugador(String name, Carta card, Mesa table) {
+    public Jugador(String nombre) {
 
-        nombre = name;
-        carta = card;
-        mesa = table;
-
+        this.nombre = nombre;
     }
 
     public String getNombre() {
-        return nombre;
+        return this.nombre;
     }
 
-    public void setNombre(String name) {
-        nombre = name;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public Carta getCarta() {
-        return carta;
+    private int[] seleccionarPosicion() {
+        int[] posicion = {-1, -1};
+        do {
+            posicion[0] = ES.pideNumero("[*]Selecciona la fila deseada [0-3]: ");
+        } while (posicion[0] < 0 || posicion[0] > 3);
+        do {
+            posicion[1] = ES.pideNumero("[*]Selecciona la columna deseada [0-3]: ");
+        } while (posicion[1] < 0 || posicion[1] > 3);
+        return posicion;
+
+    }
+    
+       public int[] seleccionarCarta() {
+        System.out.println("[?] Qué carta quieres mover del montón interior?");
+        return seleccionarPosicion();
+
     }
 
-    public void setCarta(Carta card) {
-        carta = card;
+    public int[] seleccionarDestino() {
+        System.out.println("[?] Indica la posición de destino de tu carta");
+        return seleccionarPosicion();
     }
 
-    public void seleccionarCarta() {
+    /*public void seleccionarCarta() {
 
         int x, y;
 
@@ -80,17 +88,17 @@ public class Jugador {
             int xDest = entrada.nextInt();
             System.out.println("Coordenada y: ");
             int yDest = entrada.nextInt();
-            
-            mesa.moverCartaInterior(xOrigen,yOrigen, xDest, yDest);
-            
+
+            mesa.moverCartaInterior(xOrigen, yOrigen, xDest, yDest);
+
         } else if (opcion == 'e') {
             System.out.println("Introduce las nuevas coordenadas de la carta: ");
             System.out.println("Coordenada x: ");
             int xDest = entrada.nextInt();
-            
+
             mesa.moverCartaExterior(xOrigen, yOrigen, xDest);
 
-        }
+        }*/
 
     }
 
@@ -117,5 +125,3 @@ public class Jugador {
 //    mismo palo 
 //         */
 //    }
-
-}

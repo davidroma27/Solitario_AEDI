@@ -4,7 +4,6 @@
  */
 package solitario.IU;
 
-import pila.PilaVaciaExcepcion;
 import solitario.Core.Baraja;
 import solitario.Core.Jugador;
 import solitario.Core.Mesa;
@@ -15,167 +14,115 @@ import solitario.Core.Mesa;
  */
 public class Solitario {
 
-    //Atributos.
     private static Jugador jugador;
-    private static Baraja baraja = new Baraja();
-    private static Mesa mesa = new Mesa();
+    private static Mesa mesa;
 
-    //En vez de introducir todo en inicioPartida() creé otro método llamado jugarTurnos() donde se 
-    //desarrolla el solitario.
-    //Muestra un error de visibilidad.??
+    private static void mostrarMenuInicio() {
+        System.out.println("[*] Bienvenid@ al juego del Solitario [*]\n[1] Comenzar partida\n[0] Salir");
+    }
+
+    private static Jugador crearJugador() {
+        String nombre;
+        do {
+            nombre = ES.pideCadena("[?] Introduce tu nombre para comenzar a jugar: ");
+        } while (nombre.trim().equals("")); // Comprueba que el nombre no esté vacío
+        System.out.print("[+]Registrando al jugador ");
+        System.out.println(nombre);
+        return new Jugador(nombre);
+    }
+
+    private static Mesa crearJuego() throws Exception {
+        System.out.println("[*] Generando un nuevo juego ...");
+        Baraja baraja = new Baraja();
+        Mesa _mesa = new Mesa();
+        _mesa.colocarCartas(baraja);
+        return _mesa;
+
+    }
+
+    private static void mostrarInterfaz() {
+        System.out.print("[+] Jugador : ");
+        System.out.println(jugador.getNombre());
+        System.out.println("[+] Mesa : \n");
+        mesa.mostrarMesa();
+        System.out.println("\n[%] Opciones: \n| 1) Mover carta del montón interior al montón exterior\n| 2) Mover carta del montón interior al montón interior\n| 0) Salir");
+    }
+
+    private static int mostrarVictoria(){
+        int opcion;
+        System.out.println("[+]¡Enorabuena, has ganado!");
+        do{
+        opcion = ES.pideNumero("[?] ¿Quieres jugar de nuevo?\n| 1)Si\n| 0)No\n");
+        }while(opcion!=1 && opcion!=0);
+        return opcion;
+    }
+    
+    private static void salir() {
+        System.out.println("[*] Gracias por jugar al Solitario, esperamos verte pronto [*]");
+        System.exit(0);
+    }
+    
+    private static void jugar(){
+        int opcion;
+           while (!mesa.MontonExteriorCompleto()) { // Si no ha finalizado el juego sigue mostrando interfaz
+            do {
+                mostrarInterfaz();
+                opcion = ES.pideNumero("[?] Selecciona una opción: ");
+            } while (opcion < 0 || opcion > 2);
+            switch(opcion){
+                case 1: 
+                    int[] posicion = jugador.seleccionarCarta();
+                    try{
+                    mesa.moverCartaExterior(posicion[0], posicion[1]);
+                    }catch(Exception err){System.out.print("[!] ");
+                        System.out.println(err.getMessage());
+                    }
+                    break;
+                case 2: 
+                    int[] posOri = jugador.seleccionarCarta();
+                    int[] posDest = jugador.seleccionarDestino();
+                    try{
+                    mesa.moverCartaInterior(posOri[0], posOri[1],posDest[0], posDest[1]);
+                    }catch(Exception err){System.out.print("[!] ");
+                        System.out.println(err.getMessage());
+                    }
+                    break;
+                case 0 : salir();
+            }
+            
+        }
+    }
+
     public static void inicioPartida() {
 
-        String temp = null;
+        int opcion;
+        //Mostrar menu
+        do {
+            mostrarMenuInicio();
+            opcion = ES.pideNumero("[?] Selecciona una opción: ");
+        } while (opcion != 1 && opcion != 0);
 
-        System.out.println("---------------- JUEGO DEL SOLITARIO ------------------");
-        System.out.println("");
-        ES.introducirEnter("Bienvenid@ al SOLITARIO, pulsa ENTER para introducir tu nombre y empezar la partida. ");
-        System.out.println("");
+        if (opcion == 0) {
+            salir();
+        }
 
+        //Crear jugador
         jugador = crearJugador();
 
-        do {
-
-            try {
-
-                System.out.println("INICIO DE LA PARTIDA.");
-
-                //Se vacía la mesa.
-                mesa.mostrarMesa();
-
-                //Coloca las cartas en la mesa.
-                mesa.colocarCartas(baraja);
-
-                //Se muestra la mesa con las cartas.
-                mesa.mostrarMesa();
-
-                jugarTurnos();
-
-                //Otra partida.
-                temp = ES.pideCadena("Quieres jugar otra partida " + jugador.getNombre() + " (s/n): ");
-
-                //Controlamos algún posible error si no borraremos el try-cath.
-            } catch (Exception exc) {
-                System.err.println("ERROR: " + exc.getMessage());
-            }
-
-            //Fin de juego.
-            finDePartida();
-
-        } while (temp.toLowerCase().equals("s"));
-
-    }//Fin inicioPartida().
-
-    private static void jugarTurnos() throws PilaVaciaExcepcion {
-
-        int op;
-        boolean hayMovimientos = true;
-
-        System.out.print("----------------------------------- MESA -------------------------------");
-        System.out.println(mesa);
-
-        //Fila y Columna ORIGEN.
-        int x = 0;
-        int y = 0;
-
-        //Fila y Columna DESTINO.
-        int n;
-        int m;
-
-        //Montón Exterior DESTINO.
-        int t = 0;
-
-        do {
-
-            System.out.print("----------------------------------- MESA -------------------------------");
-            System.out.println(mesa);
-
-            op = ES.pideNumero("Qué movimineto deseas hacer? "
-                    + "\n (1)-->MOVER INTERIOR."
-                    + "\n (2)-->MOVER EXTERIOR. "
-                    + " ");
-
-            switch (op) {
-                case 1:
-
-                    do {
-
-                        x = ES.pideNumero("Dime la filOrigen: ");
-                        y = ES.pideNumero("Dime la colOrigen: ");
-
-                        n = ES.pideNumero("Dime la filDestino: ");
-                        m = ES.pideNumero("Dime la colDestino: ");
-
-                        t = ES.pideNumero("Dime el monton Destino: ");
-
-                    } while ((x < 0 || x > 3) && ((y < 0 || y > 3)) && ((n < 0 || n > 3)) && ((m < 0 || m > 3)) && ((t < 0 || t > 3)));
-
-                    mesa.moverCartaInterior(x, y, n, m);
-                    System.out.println(mesa);
-
-//                        if (Solitario.finDePartida() == true) {
-//                        }
-                    break;
-
-                case 2:
-                    do {
-
-                        x = ES.pideNumero("Dime la filOrigen: ");
-
-                        y = ES.pideNumero("Dime la colOrigen: ");
-
-                        t = ES.pideNumero("Dime el monton Destino: ");
-
-                    } while ((x < 0 || x > 3) && ((y < 0 || y > 3)) && ((t < 0 || t > 3)));
-
-                    mesa.moverCartaExterior(x, y, t);
-                    System.out.println(mesa);
-
-//                        if (Solitario.finDePartida() == true) {
-//                        }
-                    break;
-                default:
-                    System.err.println("Opción incorrecta.... ");
-            }
-
-        } while (hayMovimientos == false);
-
-        finDelJuego();
-
-    }//Fin jugarTurno.
-
-//Crea el jugador.
-    private static Jugador crearJugador() {
-
-        Jugador j = new Jugador(ES.pideCadena("Introduce tu nombre: "));
-
-        return j;
-    }
-
-//Métodos de fin de partida.   
-//Es redundante terner los dos metodos...??? finDelJuego() finDePartida()
-    private static void finDelJuego() {
-
-    }
-
-//Nos dice al terminar la partida si se consiguio el objetivo o no.
-    private static boolean finDePartida() {
-
-        if (mesa.verificarMontonExterior() == true) {
-            System.out.println("Objetivo conseguido....");
-        } else {
-            System.out.println("Objetivo no conseguido... ");
+        //Crear partida
+        do{
+        try {
+            mesa = crearJuego();
+        } catch (Exception err) {
+            System.err.print("[!] No se ha podido crear el juego: ");
+            System.err.println(err.getMessage());
+            System.exit(1); // Sale con error
         }
-        return true;
+
+        //Jugar
+        jugar();
+        opcion= mostrarVictoria();
+        }while(opcion!=0);
+        salir();
     }
-
-//Comprobación si hay ganador.
-//Para ello comprobamos que los montones exteriores estan
-//todas las cartas (10 cartas) 1-2-3-4-5-6-7-10-11-12 ordenadas por palos.
-    public static boolean hayGanador() {
-
-        return false;
-    }
-
-} //Fin clase Solitario.
-
+}
