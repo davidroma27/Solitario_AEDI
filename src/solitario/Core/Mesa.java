@@ -161,20 +161,20 @@ public class Mesa {
         int montonDest = cartaOri.getPalo().ordinal();
 
         //Comprobación de que la primera carta escogida para mover sea un AS
-        if (montonExterior[montonDest].empty()){
-            if(cartaOri.getNumero() != 1){
+        if (montonExterior[montonDest].empty()) {
+            if (cartaOri.getNumero() != 1) {
                 throw new Exception("Movimiento inválido : Si un montón de un palo está vacío la primera carta a poner debe ser un as");
             }
-        }else{
+        } else {
 
-        //Vemos que carta vamos a solapar
-        Carta cartaDest = montonExterior[montonDest].peek();
+            //Vemos que carta vamos a solapar
+            Carta cartaDest = montonExterior[montonDest].peek();
 
-        //Comprobar cartaOri sea una unidad mayor sobre la carta a solapar.
-        if ((cartaOri.getNumero() == 10 && cartaDest.getNumero() != 7)
-                || (cartaOri.getNumero() != 10 && cartaOri.getNumero() - 1 != cartaDest.getNumero()) ){
-            throw new Exception("Movimiento inválido :La carta de destino no es una unidad menor que la de origen");
-        }
+            //Comprobar cartaOri sea una unidad mayor sobre la carta a solapar.
+            if ((cartaOri.getNumero() == 10 && cartaDest.getNumero() != 7)
+                    || (cartaOri.getNumero() != 10 && cartaOri.getNumero() - 1 != cartaDest.getNumero())) {
+                throw new Exception("Movimiento inválido :La carta de destino no es una unidad menor que la de origen");
+            }
         }
         //Una vez listas las comprobaciones movemos la carta al montón exterior
         montonExterior[montonDest].push(montonInterior[filaOri][colOri].pop());
@@ -244,10 +244,65 @@ public class Mesa {
         boolean flag = true;
         //comprueba cada stack del monton
         for (Stack<Carta> stack : montonExterior) {
-            if (stack.size() != 10) {
-                flag = false; // Si hay algún montón que no tenga 10 cartas significa que los montones exteriores no están llenos
+            if (stack.size() != 10 || stack.peek().getNumero() != 12) {
+                flag = false;
+                /**
+                 * Si hay algún montón que no tenga 10 cartas o la carta
+                 * superior no es un rey significa que los montones exteriores
+                 * no están llenos
+                 */
             }
         }
         return flag;
+    }
+
+    public boolean movimientosPosibles() {
+        boolean quedanMov = true;
+        for (int fila = 0; fila < montonInterior.length; fila++) { // Recorre fila
+            for (int col = 0; col < montonInterior[fila].length; col++) { //Recorre columna de fila actual
+                for(int i = 0; i < montonExterior.length; i++){ //Recorre los montones exteriores
+                    
+                    boolean hayMovimiento1 = true, hayMovimiento2 = true, hayMovimiento3 = true, hayMovimiento4 = true;
+                    Carta cartaOri = montonInterior[fila][col].peek();
+                    Carta cartaDest = montonExterior[i].peek();
+                    int montonDest = cartaOri.getPalo().ordinal();
+                    
+                    //Comprobar si hay movimientos posibles a un monton exterior
+                    if(montonExterior[montonDest].empty()){ //Stack exterior vacío
+                        if (montonInterior[fila][col].peek().getNumero() != 1) {
+                            //No se puede mover
+                            hayMovimiento1 = false;
+                        }
+                    }else{ //Si el stack exterior contiene cartas
+                        if((cartaOri.getNumero() == 10 && cartaDest.getNumero() != 7) || 
+                           (cartaOri.getNumero() != 10 && cartaOri.getNumero() - 1 != cartaDest.getNumero())){
+                            //No se puede mover
+                            hayMovimiento2 = false;
+                        }
+                    }
+                    
+                    //Comprobar si hay movimientos posibles entre montones interiores
+                    if (!cartaOri.getPalo().equals(cartaDest.getPalo())) { //Si no son del mismo palo
+                        //No se puede mover
+                        hayMovimiento3 = false;
+                    }
+
+                    //Comprobar que el número de la carta origen sea menor que la del destino
+                    //Encima del 12 no se puede poner nada
+                    if (cartaOri.getNumero() == 12
+                            || (cartaOri.getNumero() == 7 && cartaDest.getNumero() != 10)
+                            || (cartaOri.getNumero() != 7 && cartaOri.getNumero() != cartaDest.getNumero() - 1)) {
+                        //No se puede mover
+                        hayMovimiento4 = false;
+                    }
+                    
+                    if(hayMovimiento1 == false && hayMovimiento2 == false && hayMovimiento3 == false && hayMovimiento4 == false){
+                        System.out.println("Has perdido, no quedan movimientos");
+                        quedanMov = false;
+                    }
+                }
+            }
+        }
+        return quedanMov;
     }
 }
