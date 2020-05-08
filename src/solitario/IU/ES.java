@@ -27,6 +27,7 @@ public class ES {
             error = false;
             System.out.print(mensaje);
             try {
+                //Scanner que almacena la fila o columna escogida por el usuario
                 numero = Integer.parseInt(leer.nextLine());
             } catch (NumberFormatException err) {
                 error = true;

@@ -1,8 +1,4 @@
-/*
-* Representa la baraja española, 40 cartas, 4 palos, valores de las cartas de 1 a 12 (excepto 8 y 9). 
-* Estructura: se utilizará un TAD adecuado
-* Funcionalidad: estando la baraja desordenada, devolverá la carta situada encima del montón de cartas
- */
+
 package solitario.Core;
 
 import java.util.Collections;
@@ -15,9 +11,7 @@ public class Baraja {
 
     //CONSTRUCTOR DE LA BARAJA
     public Baraja() {
-        /* crearTodasCartas(barajaCartasOrdenadas);
-        rellenarBarajaAleatoriamente(barajaCartasAleatorias, barajaCartasOrdenadas);*/ //El constructor es solo para inicializar variables no usar métodos
-
+   
         //Creamos la baraja vacía
         baraja = new Stack<>();
 
@@ -30,7 +24,7 @@ public class Baraja {
             }
         }
         //Barajamos
-        Collections.shuffle(baraja);
+        Collections.shuffle(baraja); //Mezcla las cartas que se han metido en la baraja
 
     }
 

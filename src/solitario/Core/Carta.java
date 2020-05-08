@@ -41,7 +41,7 @@ public class Carta {
         }
         
         // Formato número de 2 espacios para que en mesa quede todo del mismo tamaño
-        toret.append("[").append(String.format("%2d",this.numero)).append("|").append(inicial).append("]"); // Quito salto línea para que no aparezcan todas en pila ( representación mesa mas fácil) , cambio el get. por this. (acceso directo al atributo, más eficiente)
+        toret.append("[").append(String.format("%2d",this.numero)).append("|").append(inicial).append("]"); 
 
         return toret.toString();
     }

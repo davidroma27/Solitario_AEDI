@@ -1,11 +1,6 @@
-/*
- * Representa al único jugador de la partida, identificado por el nombre 
- * Funcionalidad: le da la vuelta a una carta que está boca abajo, escoge una carta para moverla o al montón de descarte
- *                o la mueve encima de otra carta del interior
- */
+
 package solitario.Core;
 
-import solitario.IU.ES;
 
 public class Jugador {
 
@@ -24,104 +19,144 @@ public class Jugador {
         this.nombre = nombre;
     }
 
-    private int[] seleccionarPosicion() {
-        int[] posicion = {-1, -1};
-        do {
-            posicion[0] = ES.pideNumero("[*]Selecciona la fila deseada [0-3]: ");
-        } while (posicion[0] < 0 || posicion[0] > 3);
-        do {
-            posicion[1] = ES.pideNumero("[*]Selecciona la columna deseada [0-3]: ");
-        } while (posicion[1] < 0 || posicion[1] > 3);
-        return posicion;
-
-    }
-    
-       public int[] seleccionarCarta() {
+    //Funcion llamada por el metodo Jugar() de la clase Solitario
+    //seleccionarCarta() a su vez llama al metodo seleccionarPosicion() de la clase Solitario
+    //Pregunta para mover una carta de un monton ORIGEN
+    public int[] seleccionarCarta() {
         System.out.println("[?] Qué carta quieres mover del montón interior?");
-        return seleccionarPosicion();
+        return solitario.IU.Solitario.seleccionarPosicion();
 
     }
 
+    //Funcion llamada por el metodo Jugar() de la clase Solitario
+    //seleccionarDestino() a su vez llama al metodo seleccionarPosicion() de la clase Solitario
+    //Pregunta para escoger un monton DESTINO
     public int[] seleccionarDestino() {
         System.out.println("[?] Indica la posición de destino de tu carta");
-        return seleccionarPosicion();
+        return solitario.IU.Solitario.seleccionarPosicion();
     }
 
-    /*public void seleccionarCarta() {
-
-        int x, y;
-
-        System.out.println("Introduce las coordenadas de la carta que quieras girar o mover: ");
-        System.out.println("Coordenada x: ");
-        x = entrada.nextInt();
-        System.out.println("Coordenada y: ");
-        y = entrada.nextInt();
-
-        if (cartaEsVisible()) {
-
-            moverCarta(x, y);
-
-        } else {
-
-            girarCarta(x, y);
-
+    public void comprobarMovimientoInterior(int filaOri, int colOri, int filaDest, int colDest) throws Exception {
+        //Comprobar si el montón desde donde se quiere mover la carta está vacío
+        if (Mesa.montonInterior[filaOri][colOri].empty()) {
+            throw new Exception("Movimiento inválido : No se pueden mover cartas desde un espacio vacío");
         }
 
+        //Comprobar si el montón al que se quiere mover la carta está vacío
+        if (Mesa.montonInterior[filaDest][colDest].empty()) {
+            throw new Exception("Movimiento inválido : No se pueden mover cartas a espacios vacíos");
+        }
+
+        //Una vez listas las comprobaciones previas vemos que cartas queremos coger
+        Carta cartaOri = Mesa.montonInterior[filaOri][colOri].peek();
+
+        //Vemos sobre que carta queremos ponerla
+        Carta cartaDest = Mesa.montonInterior[filaDest][colDest].peek();
+
+        //Comprobar que la carta que hemos cogido y la carta sobre la cual vamos a poner sean del mismo palo
+        if (!cartaOri.getPalo().equals(cartaDest.getPalo())) {
+            throw new Exception("Movimiento inválido : No se pueden juntar cartas de distintos palos");
+        }
+
+        //Comprobar que el número de la carta origen sea menor que la del destino
+        //Encima del 12 no se puede poner nada
+        if (cartaOri.getNumero() == 12
+                || (cartaOri.getNumero() == 7 && cartaDest.getNumero() != 10)
+                || (cartaOri.getNumero() != 7 && cartaOri.getNumero() != cartaDest.getNumero() - 1)) {
+            throw new Exception("Movimiento inválido : La carta de destino no es una unidad mayor que la de origen");
+        }
+    }
+    
+    public void moverCartaInterior(int filaOri, int colOri, int filaDest, int colDest) throws Exception {
+        //!!!Lo primero que hacermos es comprobar si se puede realizar el movimiento!!!
+        this.comprobarMovimientoInterior(filaOri, colOri, filaDest, colDest);
+        // Una vez listas las comprobaciones podremos mover la carta
+        Mesa.montonInterior[filaDest][colDest].push(Mesa.montonInterior[filaOri][colOri].pop()); // Movemos a la posicion de destino la carta situada en posicion origen
     }
 
-    public void moverCarta(int xOrigen, int yOrigen) {
+    public int comprobarMovimientoExterior(int filaOri, int colOri) throws Exception {
 
-        char opcion;
+        //Comprobar si el montón desde donde se quiere mover la carta está vacío
+        if (Mesa.montonInterior[filaOri][colOri].empty()) {
+            throw new Exception("Movimiento inválido : No se pueden mover cartas desde un espacio vacío");
+        }
 
-        do {
+        //Vemos que carta vamos a mover al montón Exterior
+        Carta cartaOri = Mesa.montonInterior[filaOri][colOri].peek();
 
-            System.out.println("Si quieres mover la carta a un montón interior, pulsa i: ");
-            System.out.println("Si quieres mover la carta a su montón exterior, pulsa e: ");
+        //Miramos el palo de la carta que acabamos de coger y le asignamos el montón del mismo Palo
+        int montonDest = cartaOri.getPalo().ordinal();
 
-            opcion = entrada.next().charAt(0);
+        //Comprobación de que la primera carta escogida para mover sea un AS
+        if (Mesa.montonExterior[montonDest].empty()) {
+            if (cartaOri.getNumero() != 1) {
+                throw new Exception("Movimiento inválido : Si un montón de un palo está vacío la primera carta a poner debe ser un as");
+            }
+        } else {
 
-        } while (opcion != 'i' && opcion != 'e');
+            //Vemos que carta vamos a solapar
+            Carta cartaDest = Mesa.montonExterior[montonDest].peek();
 
-        if (opcion == 'i') {
-            System.out.println("Introduce las nuevas coordenadas de la carta: ");
-            System.out.println("Coordenada x: ");
-            int xDest = entrada.nextInt();
-            System.out.println("Coordenada y: ");
-            int yDest = entrada.nextInt();
-
-            mesa.moverCartaInterior(xOrigen, yOrigen, xDest, yDest);
-
-        } else if (opcion == 'e') {
-            System.out.println("Introduce las nuevas coordenadas de la carta: ");
-            System.out.println("Coordenada x: ");
-            int xDest = entrada.nextInt();
-
-            mesa.moverCartaExterior(xOrigen, yOrigen, xDest);
-
-        }*/
-
+            //Comprobar cartaOri sea una unidad mayor sobre la carta a solapar.
+            if ((cartaOri.getNumero() == 10 && cartaDest.getNumero() != 7)
+                    || (cartaOri.getNumero() != 10 && cartaOri.getNumero() - 1 != cartaDest.getNumero())) {
+                throw new Exception("Movimiento inválido :La carta de destino no es una unidad menor que la de origen");
+            }
+        }
+        return montonDest; //Si no lanza ninguna excepción, devuelve el monton correspondiente al palo de esa carta
     }
-
-    //Estos metodos sobran, se pueden hacer ambos movimientos en el metodo
-//    public void moverCartaPorInterior(Carta card) {
-//
-//        int nuevaX;
-//        int nuevaY;
-//
-//        System.out.println("Introduce las nuevas coordenadas de la carta: ");
-//        System.out.println("Coordenada x: ");
-//        nuevaX = entrada.nextInt();
-//        System.out.println("Coordenada y: ");
-//        nuevaY = entrada.nextInt();
-//
-//        moverCarta(nuevaX, nuevaY);
-//
-//    }
-//
-//    public void moverCartaAlExterior(Carta card) {
-//
-//        /* 
-//    Aquí no sé si debo indicar al montón que se desplaza, al ser solo posible mover unas cartas de un palo al montón de su
-//    mismo palo 
-//         */
-//    }
+    
+    //Funcion que mueve la carta elegida del monton interior a su monton exterior correspondiente
+    public void moverCartaExterior(int filaOri, int colOri) throws Exception {
+        //!!!Lo primero que hacermos es comprobar si se puede realizar el movimiento!!!
+        int montonDest = this.comprobarMovimientoExterior(filaOri,colOri);
+        //Una vez listas las comprobaciones movemos la carta al montón exterior
+        Mesa.montonExterior[montonDest].push(Mesa.montonInterior[filaOri][colOri].pop());
+    }    
+        
+    //Se llama en cada bucle del metodo Jugar() en Solitario
+    public boolean movPosibles() {
+        boolean quedanMov = false; //Inicializamos a false la variable que indica si quedan mov.posibles 
+        
+        int fila, columna; //Fila y columna que referencian una carta origen 
+        int filaC, columnaC; //Fila y columna que referencian una carta destino
+        
+        fila = 0;
+        
+        //Recorre cada fila del monton interior
+        while(!quedanMov && fila < Mesa.montonInterior.length) {
+            columna = 0;
+            //Recorre las columnas de cada fila del monton interior
+            while(!quedanMov && columna < Mesa.montonInterior[fila].length) {
+                
+                // --- Comprobaciones del monton interior
+                filaC = 0;
+                while(!quedanMov && filaC < Mesa.montonInterior.length) {
+                    columnaC = 0;
+                    while(!quedanMov && columnaC < Mesa.montonInterior[fila].length) {
+                        if(fila != filaC && columna != columnaC) { //Evita que una carta se compruebe a si misma
+                            try {
+                                //Comprueba el movimiento posible entre la carta origen y carta destino
+                                this.comprobarMovimientoInterior(fila, columna, filaC, columnaC);
+                                quedanMov = true; //Si el movimiento es posible, devuelve true y continúa la partida
+                            } catch(Exception err) {}
+                        } 
+                        columnaC++;
+                    }
+                    filaC++;
+                }
+                
+                // --- Comprobaciones del montón exterior
+                try {
+                    this.comprobarMovimientoExterior(fila, columna);
+                    quedanMov = true;
+                } catch(Exception err) {}
+                
+                columna++;
+            }
+            fila++;
+        }
+                
+        return quedanMov;
+    }
+}
