@@ -54,7 +54,7 @@ public class Mesa {
             }
         }
     }
-
+    
     //Muestra por pantalla las cartas que hay visibles en la mesa
     public void mostrarMesa() {
         // Creamos una representación para carta inexistente
@@ -89,12 +89,14 @@ public class Mesa {
     //Comprueba si los montones exteriores han sido completados
     public boolean MontonExteriorCompleto() {
         boolean flag = true;
+        int i = 0;
         //comprueba cada stack del monton
-        for (Stack<Carta> stack : montonExterior) {
-            if (stack.size() != 10) {
-                flag = false; // Si hay algún montón que no tenga 10 cartas significa que los montones exteriores no están llenos
+        while(i < montonExterior.length){
+            if (montonExterior[i].size() != 10) {
+              flag = false; // Si hay algún montón que no tenga 10 cartas significa que los montones exteriores no están llenos
             }
+            i++;
         }
         return flag;
     }
-}
+} 

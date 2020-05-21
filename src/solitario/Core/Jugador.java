@@ -1,13 +1,11 @@
 
 package solitario.Core;
 
-
 public class Jugador {
 
     private String nombre;
 
     public Jugador(String nombre) {
-
         this.nombre = nombre;
     }
 
@@ -41,12 +39,12 @@ public class Jugador {
         if (Mesa.montonInterior[filaOri][colOri].empty()) {
             throw new Exception("Movimiento inválido : No se pueden mover cartas desde un espacio vacío");
         }
-
+    
         //Comprobar si el montón al que se quiere mover la carta está vacío
         if (Mesa.montonInterior[filaDest][colDest].empty()) {
             throw new Exception("Movimiento inválido : No se pueden mover cartas a espacios vacíos");
         }
-
+    
         //Una vez listas las comprobaciones previas vemos que cartas queremos coger
         Carta cartaOri = Mesa.montonInterior[filaOri][colOri].peek();
 
@@ -60,9 +58,18 @@ public class Jugador {
 
         //Comprobar que el número de la carta origen sea menor que la del destino
         //Encima del 12 no se puede poner nada
-        if (cartaOri.getNumero() == 12
-                || (cartaOri.getNumero() == 7 && cartaDest.getNumero() != 10)
-                || (cartaOri.getNumero() != 7 && cartaOri.getNumero() != cartaDest.getNumero() - 1)) {
+        int numDest = cartaDest.getNumero();
+        int numOri = cartaOri.getNumero();
+        
+        if (numOri == 12) {
+            throw new Exception("Movimiento inválido : La carta de destino no es una unidad mayor que la de origen");
+        }
+        
+        if (numOri == 7 && numDest != 10) {
+            throw new Exception("Movimiento inválido : La carta de destino no es una unidad mayor que la de origen");
+        }
+        
+        if (numOri != 7 && numOri != (numDest-1)) {
             throw new Exception("Movimiento inválido : La carta de destino no es una unidad mayor que la de origen");
         }
     }
@@ -75,12 +82,12 @@ public class Jugador {
     }
 
     public int comprobarMovimientoExterior(int filaOri, int colOri) throws Exception {
-
+    
         //Comprobar si el montón desde donde se quiere mover la carta está vacío
         if (Mesa.montonInterior[filaOri][colOri].empty()) {
             throw new Exception("Movimiento inválido : No se pueden mover cartas desde un espacio vacío");
         }
-
+    
         //Vemos que carta vamos a mover al montón Exterior
         Carta cartaOri = Mesa.montonInterior[filaOri][colOri].peek();
 
@@ -117,46 +124,45 @@ public class Jugador {
     //Se llama en cada bucle del metodo Jugar() en Solitario
     public boolean movPosibles() {
         boolean quedanMov = false; //Inicializamos a false la variable que indica si quedan mov.posibles 
-        
+
         int fila, columna; //Fila y columna que referencian una carta origen 
         int filaC, columnaC; //Fila y columna que referencian una carta destino
-        
+
         fila = 0;
-        
+
         //Recorre cada fila del monton interior
         while(!quedanMov && fila < Mesa.montonInterior.length) {
             columna = 0;
             //Recorre las columnas de cada fila del monton interior
             while(!quedanMov && columna < Mesa.montonInterior[fila].length) {
-                
+
                 // --- Comprobaciones del monton interior
                 filaC = 0;
                 while(!quedanMov && filaC < Mesa.montonInterior.length) {
                     columnaC = 0;
                     while(!quedanMov && columnaC < Mesa.montonInterior[fila].length) {
-                        if(fila != filaC && columna != columnaC) { //Evita que una carta se compruebe a si misma
                             try {
                                 //Comprueba el movimiento posible entre la carta origen y carta destino
                                 this.comprobarMovimientoInterior(fila, columna, filaC, columnaC);
                                 quedanMov = true; //Si el movimiento es posible, devuelve true y continúa la partida
-                            } catch(Exception err) {}
-                        } 
+                            } catch(Exception err) {}   
+                            
                         columnaC++;
                     }
                     filaC++;
                 }
-                
+
                 // --- Comprobaciones del montón exterior
                 try {
                     this.comprobarMovimientoExterior(fila, columna);
                     quedanMov = true;
                 } catch(Exception err) {}
-                
+
                 columna++;
             }
             fila++;
         }
-                
+
         return quedanMov;
     }
 }

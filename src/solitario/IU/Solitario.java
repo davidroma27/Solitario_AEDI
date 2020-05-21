@@ -66,6 +66,7 @@ public class Solitario {
     //Es llamado en el metodo Jugar() debido a que no quedan mas movPosibles
     private static int mostrarDerrota() {
         int opcion;
+        mesa.mostrarMesa();
         System.out.println("[+]¡Lo siento, has perdido!");
         do {
             opcion = ES.pideNumero("[?] ¿Quieres jugar de nuevo?\n| 1)Si\n| 0)No\n");
@@ -81,7 +82,7 @@ public class Solitario {
     //Metodo que se ejecuta durante la partida
     private static int jugar() {
         int opcion;
-        while (!mesa.MontonExteriorCompleto() && jugador.movPosibles()) { // Si no ha finalizado el juego sigue mostrando interfaz
+        do { 
             do {
                 mostrarInterfaz();
                 opcion = ES.pideNumero("[?] Selecciona una opción: ");
@@ -112,7 +113,8 @@ public class Solitario {
                 case 0:
                     salir();
             }
-        }
+          // Si no ha finalizado el juego sigue mostrando interfaz
+        } while (!mesa.MontonExteriorCompleto() && jugador.movPosibles());
 
         //Si el monton exterior esta completo, mostramos victoria. Si no, mostramos derrota (porque no quedan movPosibles)
         //mostrarVictoria() y mostrarDerrota() devuelven un int(0,1) correspondiente a la opción elegida por el usuario
