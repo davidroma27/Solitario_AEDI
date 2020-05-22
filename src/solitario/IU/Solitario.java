@@ -53,7 +53,6 @@ public class Solitario {
         System.out.println("\n[%] Opciones: \n| 1) Mover carta del montón interior al montón exterior\n| 2) Mover carta del montón interior al montón interior\n| 0) Salir");
     }
 
-    
     private static int mostrarVictoria() {
         int opcion;
         System.out.println("[+]¡Enorabuena, has ganado!");
@@ -82,28 +81,28 @@ public class Solitario {
     //Metodo que se ejecuta durante la partida
     private static int jugar() {
         int opcion;
-        do { 
+        do {
             do {
                 mostrarInterfaz();
                 opcion = ES.pideNumero("[?] Selecciona una opción: ");
             } while (opcion < 0 || opcion > 2);
             switch (opcion) {
                 case 1: //Opcion 1: Mover una carta al monton exterior
-                    int [] posicion = seleccionarCarta(); //Almacenamos las posiciones de la carta origen elegida
+                    int[] posicion = seleccionarCarta(); //Almacenamos las posiciones de la carta origen elegida
                     try {
                         //Una vez obtenidas fila y columna, se realiza el movimiento
-                        jugador.moverCartaExterior(mesa,posicion[0], posicion[1]); //Realizamos el movimiento con la carta elegida
-                    } catch (Exception err) { 
+                        jugador.moverCartaExterior(mesa, posicion[0], posicion[1]); //Realizamos el movimiento con la carta elegida
+                    } catch (Exception err) {
                         //Se captura la excepción lanzada desde el método comprobarMovimientoExterior() en Jugador
                         System.out.print("[!] ");
                         System.out.println(err.getMessage());
                     }
                     break;
                 case 2: //Opcion 2: Mover una carta entre montones interiores
-                    int[] posOri = seleccionarCarta(); 
+                    int[] posOri = seleccionarCarta();
                     int[] posDest = seleccionarDestino();
                     try {
-                        jugador.moverCartaInterior(mesa,posOri[0], posOri[1], posDest[0], posDest[1]);
+                        jugador.moverCartaInterior(mesa, posOri[0], posOri[1], posDest[0], posDest[1]);
                     } catch (Exception err) {
                         //Se captura la excepción lanzada desde el método comprobarMovimientoInterior() en Jugador
                         System.out.print("[!] ");
@@ -113,7 +112,7 @@ public class Solitario {
                 case 0:
                     salir();
             }
-          // Si no ha finalizado el juego sigue mostrando interfaz
+            // Si no ha finalizado el juego sigue mostrando interfaz
         } while (!mesa.MontonExteriorCompleto() && mesa.movPosibles());
 
         //Si el monton exterior esta completo, mostramos victoria. Si no, mostramos derrota (porque no quedan movPosibles)
@@ -152,7 +151,7 @@ public class Solitario {
 
             //Jugar
             opcion = jugar(); //Almacena el int devuelto correspondiente a la opcion elegida por el usuario
-                              //Jugar de nuevo(1) o salir(0)
+            //Jugar de nuevo(1) o salir(0)
         } while (opcion != 0);
         salir();
     }
@@ -170,9 +169,8 @@ public class Solitario {
         } while (posicion[1] < 0 || posicion[1] > 3); //Se controla que el numero a introducir corresponda a una columna(0,1,2 ó 3)
         return posicion;
     }
-    
-    
-     //Funcion llamada por el metodo Jugar() de la clase Solitario
+
+    //Funcion llamada por el metodo Jugar() de la clase Solitario
     //seleccionarCarta() a su vez llama al metodo seleccionarPosicion() de la clase Solitario
     //Pregunta para mover una carta de un monton ORIGEN
     public static int[] seleccionarCarta() {

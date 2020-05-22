@@ -5,7 +5,6 @@
  */
 package solitario.Core;
 
-
 public class Jugador {
 
     private String nombre;
@@ -22,23 +21,19 @@ public class Jugador {
         this.nombre = nombre;
     }
 
-   
-    public void moverCartaInterior(Mesa mesa,int filaOri, int colOri, int filaDest, int colDest) throws Exception {
+    public void moverCartaInterior(Mesa mesa, int filaOri, int colOri, int filaDest, int colDest) throws Exception {
         //!!!Lo primero que hacermos es comprobar si se puede realizar el movimiento!!!
         mesa.comprobarMovimientoInterior(filaOri, colOri, filaDest, colDest);
         // Una vez listas las comprobaciones podremos mover la carta
-        Mesa.montonInterior[filaDest][colDest].push(Mesa.montonInterior[filaOri][colOri].pop()); // Movemos a la posicion de destino la carta situada en posicion origen
+        mesa.getMontonInterior(filaDest, colDest).push(mesa.getMontonInterior(filaOri, colOri).pop()); // Movemos a la posicion de destino la carta situada en posicion origen
     }
 
-    
-    
     //Funcion que mueve la carta elegida del monton interior a su monton exterior correspondiente
-    public void moverCartaExterior(Mesa mesa,int filaOri, int colOri) throws Exception {
+    public void moverCartaExterior(Mesa mesa, int filaOri, int colOri) throws Exception {
         //!!!Lo primero que hacermos es comprobar si se puede realizar el movimiento!!!
-        int montonDest = mesa.comprobarMovimientoExterior(filaOri,colOri);
+        int montonDest = mesa.comprobarMovimientoExterior(filaOri, colOri);
         //Una vez listas las comprobaciones movemos la carta al montón exterior
-        Mesa.montonExterior[montonDest].push(Mesa.montonInterior[filaOri][colOri].pop());
-    }    
-        
-    
+        mesa.getMontonExterior(montonDest).push(mesa.getMontonInterior(filaOri, colOri).pop());
+    }
+
 }
