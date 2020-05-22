@@ -58,18 +58,10 @@ public class Jugador {
 
         //Comprobar que el número de la carta origen sea menor que la del destino
         //Encima del 12 no se puede poner nada
-        int numDest = cartaDest.getNumero();
-        int numOri = cartaOri.getNumero();
         
-        if (numOri == 12) {
-            throw new Exception("Movimiento inválido : La carta de destino no es una unidad mayor que la de origen");
-        }
-        
-        if (numOri == 7 && numDest != 10) {
-            throw new Exception("Movimiento inválido : La carta de destino no es una unidad mayor que la de origen");
-        }
-        
-        if (numOri != 7 && numOri != (numDest-1)) {
+        if (cartaOri.getNumero() == 12
+        || (cartaOri.getNumero() == 7 && cartaDest.getNumero() != 10)
+        || (cartaOri.getNumero() != 7 && cartaOri.getNumero() != cartaDest.getNumero() - 1)) {
             throw new Exception("Movimiento inválido : La carta de destino no es una unidad mayor que la de origen");
         }
     }

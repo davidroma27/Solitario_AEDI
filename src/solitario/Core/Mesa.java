@@ -56,7 +56,9 @@ public class Mesa {
     }
     
     //Muestra por pantalla las cartas que hay visibles en la mesa
-    public void mostrarMesa() {
+    @Override
+    public String toString() {
+        
         // Creamos una representación para carta inexistente
         String cartaInexistente = "[--|-]"; //Cuando el stack está vacío
 
@@ -84,6 +86,8 @@ public class Mesa {
             }
             System.out.println(); // Separación vertical
         }
+        
+        return "";
     }
 
     //Comprueba si los montones exteriores han sido completados

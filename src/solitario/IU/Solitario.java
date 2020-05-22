@@ -49,7 +49,7 @@ public class Solitario {
         System.out.print("[+] Jugador : ");
         System.out.println(jugador.getNombre());
         System.out.println("[+] Mesa : \n");
-        mesa.mostrarMesa(); //Se llama a la funcion mostrarMesa de la clase mesa
+        mesa.toString(); //Se llama a la funcion mostrarMesa de la clase mesa
         System.out.println("\n[%] Opciones: \n| 1) Mover carta del montón interior al montón exterior\n| 2) Mover carta del montón interior al montón interior\n| 0) Salir");
     }
 
@@ -66,7 +66,7 @@ public class Solitario {
     //Es llamado en el metodo Jugar() debido a que no quedan mas movPosibles
     private static int mostrarDerrota() {
         int opcion;
-        mesa.mostrarMesa();
+        mesa.toString();
         System.out.println("[+]¡Lo siento, has perdido!");
         do {
             opcion = ES.pideNumero("[?] ¿Quieres jugar de nuevo?\n| 1)Si\n| 0)No\n");

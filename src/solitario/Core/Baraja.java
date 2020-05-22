@@ -29,12 +29,7 @@ public class Baraja {
     }
 
     //Coger carta
-    public Carta sacarCarta() throws Exception {
-
-        if (baraja.empty()) { // Si la baraja está vacía salta excepción
-            throw new Exception("La baraja esta vacía");
-        } 
-        
+    public Carta sacarCarta() {
         return baraja.pop(); // Coge la última carta de la baraja
     }
 
