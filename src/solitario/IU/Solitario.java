@@ -93,7 +93,7 @@ public class Solitario {
                         //Una vez obtenidas fila y columna, se realiza el movimiento
                         jugador.moverCartaExterior(mesa, posicion[0], posicion[1]); //Realizamos el movimiento con la carta elegida
                     } catch (Exception err) {
-                        //Se captura la excepción lanzada desde el método comprobarMovimientoExterior() en Jugador
+                        //Se captura la excepción lanzada desde el método colocarCartaExterior() en Jugador
                         System.out.print("[!] ");
                         System.out.println(err.getMessage());
                     }
@@ -104,7 +104,7 @@ public class Solitario {
                     try {
                         jugador.moverCartaInterior(mesa, posOri[0], posOri[1], posDest[0], posDest[1]);
                     } catch (Exception err) {
-                        //Se captura la excepción lanzada desde el método comprobarMovimientoInterior() en Jugador
+                        //Se captura la excepción lanzada desde el método colocarCartaInterior() en Jugador
                         System.out.print("[!] ");
                         System.out.println(err.getMessage());
                     }

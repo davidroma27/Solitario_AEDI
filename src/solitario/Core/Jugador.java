@@ -22,18 +22,13 @@ public class Jugador {
     }
 
     public void moverCartaInterior(Mesa mesa, int filaOri, int colOri, int filaDest, int colDest) throws Exception {
-        //!!!Lo primero que hacermos es comprobar si se puede realizar el movimiento!!!
-        mesa.comprobarMovimientoInterior(filaOri, colOri, filaDest, colDest);
-        // Una vez listas las comprobaciones podremos mover la carta
-        mesa.getMontonInterior(filaDest, colDest).push(mesa.getMontonInterior(filaOri, colOri).pop()); // Movemos a la posicion de destino la carta situada en posicion origen
+        mesa.colocarCartaInterior(filaOri, colOri, filaDest, colDest,false);       
     }
 
     //Funcion que mueve la carta elegida del monton interior a su monton exterior correspondiente
     public void moverCartaExterior(Mesa mesa, int filaOri, int colOri) throws Exception {
-        //!!!Lo primero que hacermos es comprobar si se puede realizar el movimiento!!!
-        int montonDest = mesa.comprobarMovimientoExterior(filaOri, colOri);
-        //Una vez listas las comprobaciones movemos la carta al montón exterior
-        mesa.getMontonExterior(montonDest).push(mesa.getMontonInterior(filaOri, colOri).pop());
+        mesa.colocarCartaExterior(filaOri, colOri,false);
+      
     }
 
 }
